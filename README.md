@@ -1,2 +1,2 @@
 # OGC-Team-A
-Funny Test go here!
+Funny Text go here!
