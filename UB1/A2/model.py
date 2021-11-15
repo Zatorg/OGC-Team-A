@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 from agents import Ant, Particle
 
-
+'''
 def clustercount(grid):
     sum_grid = np.zeros_like(grid)
     maxi, maxj = grid.shape
@@ -46,10 +46,14 @@ def compute_singles(model, thresh=7):
     res = clustercount(grid)
     count_arr = np.bincount(res)
     return np.sum(count_arr[0, thresh+1])
+'''
 
-
+# TODO Test Changes
 class ClusteringModel(Model):
     def __init__(self, N, density=0.1, s=1, j=3, width=50, height=50, random_creation=True):
+        self.alpha = 0.5                                #TODO add to constructor
+        self.k_plus = 0.1                               #TODO add to constructor
+        self.k_minus = 0.3                              #TODO add to constructor
         self.num_ants = N
         self.density = density
         self.stepsize = s
