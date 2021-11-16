@@ -46,13 +46,12 @@ def compute_singles(model, thresh=7):
 
 
 class ClusteringModel(Model):
-    def __init__(self, N, density=0.1, stepsize=1, jumpsize=3,
+    def __init__(self, N, density=0.1, stepsize=1,
                  alpha=0.5, k_plus=0.1, k_minus=0.3,
                  width=50, height=50, random_creation=True):
         self.num_ants = N
         self.density = density
         self.stepsize = stepsize
-        self.jumpsize = jumpsize
 
         self.alpha = alpha
         self.k_plus = k_plus

@@ -63,7 +63,6 @@ class Ant(Agent):
         self.move_to(pos)
 
     def step(self):
-        print("ID", self.unique_id)
         self.move(self.model.stepsize)
 
         if self.loaded:
@@ -99,7 +98,7 @@ class Particle(Agent):
 
         for other in others:
             a = (self.dissimilarity(other) / self.model.alpha)
-            diss_val = 1 - a
+            diss_val = 1-a
             l.append(diss_val)
 
         if all(i > 0 for i in l):
@@ -109,11 +108,11 @@ class Particle(Agent):
 
         return val
 
-    def p_drop(self):
+    def p_pick(self):
         p = self.model.k_plus / (self.model.k_plus + self.f())
         return p**2
 
-    def p_pick(self):
+    def p_drop(self):
         p = self.f() / (self.model.k_minus + self.f())
         return p**2
 
