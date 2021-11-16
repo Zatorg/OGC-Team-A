@@ -58,7 +58,8 @@ arguments = {
     "alpha": UserSettableParameter("slider", "Alpha", 0.5, 0.01, 1.0, 0.01),
     "k_plus": UserSettableParameter("slider", "K+", 0.1, 0.01, 1.0, 0.01),
     "k_minus": UserSettableParameter("slider", "K-", 0.3, 0.01, 1.0, 0.01),
-    "random_creation": UserSettableParameter("checkbox", "Random Creation", True)
+    "random_creation": UserSettableParameter("checkbox", "Random Creation", True),
+    "mod_thresh": UserSettableParameter("checkbox", "Modified Threshhold", True)
 }
 
 server = ModularServer(ClusteringModel, [grid], "Clustering Model", arguments)

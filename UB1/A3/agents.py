@@ -21,7 +21,11 @@ class Ant(Agent):
         self.move_to(new_position)
 
     def pickup(self, particle):
-        p_pick = particle.p_pick()
+        if self.model.mod_thresh:
+            p_pick = particle.mod_p_pick()
+        else:
+            p_pick = particle.p_pick()
+
         if self.random.random() < p_pick:
             particle.free = False
             self.particle = particle
@@ -33,7 +37,11 @@ class Ant(Agent):
         self.pickup(particle)
 
     def drop(self):
-        p_drop = self.particle.p_drop()
+        if self.model.mod_thresh:
+            p_drop = self.particle.mod_p_drop()
+        else:
+            p_drop = self.particle.p_drop()
+
         if self.random.random() < p_drop:
             if not self.model.grid.is_cell_empty(self.pos):
                 self.find_empty(radius=1)
@@ -110,9 +118,25 @@ class Particle(Agent):
         p = self.model.k_plus / (self.model.k_plus + self.f())
         return p**2
 
+    def mod_p_pick(self):
+        f_val = self.f()
+        if self.f() <= 1.0:
+            p = 1.0
+        else:
+            p = 1/(f_val)**2
+        return p
+
     def p_drop(self):
         p = self.f() / (self.model.k_minus + self.f())
         return p**2
+
+    def mod_p_drop(self):
+        f_val = self.f()
+        if self.f() >= 1.0:
+            p = 1.0
+        else:
+            p = (f_val)**4
+        return p
 
 
 class Stone(Particle):

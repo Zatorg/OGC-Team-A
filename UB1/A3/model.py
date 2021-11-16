@@ -47,7 +47,8 @@ def compute_singles(model, thresh=7):
 class ClusteringModel(Model):
     def __init__(self, N, density=0.1, stepsize=1, perception_radius=1,
                  alpha=0.5, k_plus=0.1, k_minus=0.3,
-                 width=50, height=50, random_creation=True):
+                 width=50, height=50,
+                 random_creation=True, mod_thresh=True):
         self.num_ants = N
         self.density = density
         self.stepsize = stepsize
@@ -58,6 +59,7 @@ class ClusteringModel(Model):
         self.k_minus = k_minus
 
         self.random_creation = random_creation
+        self.mod_thresh = mod_thresh
 
         self.grid = ClusterGrid(width, height, True)
         self.schedule = RandomActivation(self)
