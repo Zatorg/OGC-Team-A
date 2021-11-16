@@ -54,9 +54,9 @@ arguments = {
     "height":50,
     "density": UserSettableParameter("slider", "Particle Density", 0.1, 0.01, 1.0, 0.01),
     "stepsize": UserSettableParameter("slider", "Step Size", 1, 1, 5),
-    "alpha": UserSettableParameter("slider", "Alpha", 0.5, 0.0, 1.0, 0.01),
-    "k_plus": UserSettableParameter("slider", "K+", 0.1, 0.0, 1.0, 0.01),
-    "k_minus": UserSettableParameter("slider", "K-", 0.3, 0.0, 1.0, 0.01),
+    "alpha": UserSettableParameter("slider", "Alpha", 0.5, 0.01, 1.0, 0.01),
+    "k_plus": UserSettableParameter("slider", "K+", 0.1, 0.01, 1.0, 0.01),
+    "k_minus": UserSettableParameter("slider", "K-", 0.3, 0.01, 1.0, 0.01),
     "random_creation": UserSettableParameter("checkbox", "Random Creation", True)
 }
 

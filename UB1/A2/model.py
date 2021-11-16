@@ -134,6 +134,6 @@ class ClusterGrid(MultiGrid):
         for (x, y) in nbh:
             contents = self.grid[x][y]
             if len(contents) > 0:
-                particles.append([c for c in contents if type(c) in [Stone, Leaf, Stick]])
+                particles.extend([c for c in contents if type(c) in [Stone, Leaf, Stick]])
 
         return particles, len(nbh)

@@ -105,7 +105,6 @@ class Particle(Agent):
             val = (1/sigma_squared) * sum(l)
         else:
             val = 0
-
         return val
 
     def p_pick(self):
