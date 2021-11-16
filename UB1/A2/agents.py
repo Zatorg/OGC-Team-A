@@ -1,14 +1,10 @@
 from mesa import Agent
 
-import random
-import numpy as np
-
-# TODO Test Changes
 class Ant(Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
         self.loaded = False
-        self.object = None
+        self.particle = None
 
     def move_to(self, new_pos):
         self.model.grid.move_agent(self, new_pos)
@@ -22,29 +18,33 @@ class Ant(Agent):
             possible_steps = [i for i in possible_steps if i not in inner] 
 
         new_position = self.random.choice(possible_steps)
-        self.move_to(new_position)       
+        self.move_to(new_position)
 
-    def occupant(self):
-        for cellmate in self.model.grid.get_cell_list_contents([self.pos]):
-            if type(cellmate) is Object and cellmate is not self.particle:
-                return cellmate
-        return None
-
-    def pickup(self, object):
-        p_pickup = self.model.k_plus / (self.model.k_plus + object.neigbourhood_lumer_faieta())
-        if self.random.random() < p_pickup:
-            self.object = object
+    def pickup(self, particle):
+        p_pick = particle.p_pick()
+        if self.random.random() < p_pick:
+            particle.free = False
+            self.particle = particle
             self.loaded = True
-        self.move(self.model.jumpsize)
 
-    # TODO Implement probability based drop
+    def pick(self):
+        particle = self.model.random_particle()
+        self.move_to(particle.pos)
+        self.pickup(particle)
+
     def drop(self):
-        self.loaded = False
-        self.object = None
-        self.move(self.model.jumpsize)
+        p_drop = self.particle.p_drop()
+        if self.random.random() < p_drop:
+            #if self.model.grid.is_cell_free(self.pos)      # ClusterGrid function
+            if not self.model.grid.is_cell_empty(self.pos):
+                self.find_empty(radius=1)
+            self.particle.free = True
+            self.loaded = False
+            self.particle = None
 
-    def find_empty(self):
-        nbh = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False, radius=self.model.stepsize)
+    def find_empty(self, radius=None):
+        if radius==None: radius = self.model.stepsize
+        nbh = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True, radius=radius)
         free_cells = [cell for cell in nbh if self.model.grid.is_cell_empty(cell)]
         if len(free_cells) > 1:
             new_position = self.random.choice(free_cells)
@@ -52,57 +52,82 @@ class Ant(Agent):
         else: 
             print("No free cell in neighborhood")
 
+    def initial_step(self):
+        particle = self.model.random_particle()
+
+        particle.free = False
+        self.particle = particle
+        self.loaded = True
+
+        pos = self.model.grid.find_empty()
+        self.move_to(pos)
+
     def step(self):
-        o = self.occupant()
+        print("ID", self.unique_id)
+        self.move(self.model.stepsize)
 
-        if o is not None:
-            if not self.loaded:
-                self.pickup(o)
-            else:
-                self.find_empty()
-                self.drop()
-        else:
-            self.move(self.model.stepsize)
+        if self.loaded:
+            self.drop()
+            while not self.loaded:
+                self.pick()
 
 
-class Object(Agent):
+class Particle(Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
+        self.free = True
 
     def move(self, new_position):
         self.model.grid.move_agent(self, new_position)
 
+    def initial_step(self):
+        pass
+
     def step(self):
         pass
 
-    def distance_object(self, object):
-        if type(self) is type(object):
-            return 0.0
+    def dissimilarity(self, other):
+        return int(type(self) is not type(other))
+
+    def f(self):
+        l = []
+
+        others, nbh_size = self.model.grid.get_particles_in_neighborhood(self.pos, moore=True,
+                                               include_center=True,
+                                               radius=min(self.model.stepsize, 2))
+        sigma_squared = nbh_size
+
+        for other in others:
+            a = (self.dissimilarity(other) / self.model.alpha)
+            diss_val = 1 - a
+            l.append(diss_val)
+
+        if all(i > 0 for i in l):
+            val = (1/sigma_squared) * sum(l)
         else:
-            return 1.0
+            val = 0
 
-    def neigbourhood_lumer_faieta(self):
-        sum = 0.0
-        # TODO add viewdistance
-        nbh = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True, radius=self.model.stepsize)
-        for cellmate in self.model.grid.get_cell_list_contents(nbh):
-            if cellmate.__bases__ is self.__bases__:
-                sum += 1.0 - (distance_object(cellmate) / self.model.alpha)
-        f = sum / ((2 * (self.model.stepsize - 1) + 1)**2)
-        return max(f, 0)
+        return val
+
+    def p_drop(self):
+        p = self.model.k_plus / (self.model.k_plus + self.f())
+        return p**2
+
+    def p_pick(self):
+        p = self.f() / (self.model.k_minus + self.f())
+        return p**2
 
 
-class Stone(Object):
+class Stone(Particle):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
 
 
-class Leaf(Object):
+class Leaf(Particle):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
 
 
-class Stick(Object):
+class Stick(Particle):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-

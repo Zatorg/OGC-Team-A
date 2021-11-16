@@ -1,15 +1,11 @@
 from mesa import Model
 from mesa.time import RandomActivation
-from mesa.space import MultiGrid
+from mesa.space import MultiGrid, Coordinate
 from mesa.datacollection import DataCollector
 from mesa.batchrunner import BatchRunner
 
-import random
 import numpy as np
-
-import matplotlib.pyplot as plt
-
-from agents import Ant, Particle
+from agents import Ant, Particle, Stick, Stone, Leaf
 
 '''
 def clustercount(grid):
@@ -45,27 +41,32 @@ def compute_singles(model, thresh=7):
 
     res = clustercount(grid)
     count_arr = np.bincount(res)
-    return np.sum(count_arr[0, thresh+1])
+    return np.sum(count_arr[1, thresh])
 '''
 
-# TODO Test Changes
+
 class ClusteringModel(Model):
-    def __init__(self, N, density=0.1, s=1, j=3, width=50, height=50, random_creation=True):
-        self.alpha = 0.5                                #TODO add to constructor
-        self.k_plus = 0.1                               #TODO add to constructor
-        self.k_minus = 0.3                              #TODO add to constructor
+    def __init__(self, N, density=0.1, stepsize=1, jumpsize=3,
+                 alpha=0.5, k_plus=0.1, k_minus=0.3,
+                 width=50, height=50, random_creation=True):
         self.num_ants = N
         self.density = density
-        self.stepsize = s
-        self.jumpsize = j
+        self.stepsize = stepsize
+        self.jumpsize = jumpsize
+
+        self.alpha = alpha
+        self.k_plus = k_plus
+        self.k_minus = k_minus
+
         self.random_creation = random_creation
 
-        self.grid = MultiGrid(width, height, False)
+        self.grid = ClusterGrid(width, height, True)
         self.schedule = RandomActivation(self)
         self.running = True
 
         self.create_particles()
         self.create_ants()
+        self.initial_step()
 
     def create_ants(self):
         for i in range(self.num_ants):
@@ -86,11 +87,54 @@ class ClusteringModel(Model):
         particle_coords = np.argwhere(rands < self.density)
 
         for i in range(len(particle_coords)):
-            p = Particle(i + self.num_ants, self)
+            r = self.random.randint(0, 2)
+            if r == 0:
+                P = Stone
+            elif r == 1:
+                P = Stick
+            elif r == 2:
+                P = Leaf
+            else:
+                print(r, "ERROR")
+                P = Particle
+
+            p = P(i + self.num_ants, self)
             pos = (particle_coords[i, 0], particle_coords[i, 1])
             self.schedule.add(p)
             self.grid.place_agent(p, pos)
 
+    def random_particle(self):
+        particles = [agent for key, agent in self.schedule._agents.items()
+                     if type(agent).__bases__[0] is Particle and agent.free]
+        choice = self.random.randint(0, len(particles) - 1)
+        return particles[choice]
+
+    def initial_step(self):
+        for key, agent in self.schedule._agents.items():
+            agent.initial_step()
+        print('{"type":"initial_step"}')        # just for fun
+
     def step(self):
-        #singles = compute_singles(self)
+        # singles = compute_singles(self)
+        # print(singles)
+        #if self.schedule.steps == 0:
+            #self.initial_step()
         self.schedule.step()
+
+
+class ClusterGrid(MultiGrid):
+    def __init__(self, width, height, torus=False):
+        super().__init__(width, height, torus)
+
+    # hilfsfunktion wegen index error
+    def get_particles_in_neighborhood(self, pos, moore, include_center, radius=1):
+        nbh = self.get_neighborhood(pos=pos, moore=moore,
+                                    include_center=include_center,
+                                    radius=radius)
+        particles = []
+        for (x, y) in nbh:
+            contents = self.grid[x][y]
+            if len(contents) > 0:
+                particles.append([c for c in contents if type(c) in [Stone, Leaf, Stick]])
+
+        return particles, len(nbh)

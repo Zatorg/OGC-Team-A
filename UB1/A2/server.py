@@ -6,17 +6,40 @@ import model
 from model import ClusteringModel
 
 def agent_portrayal(agent):
-    portrayal = {"Shape": "circle",
-                 "Filled": "true",
-                 "r": 0.7}
+    portrayal = {"Filled": "true"}
     
     if type(agent) is model.Ant:
+        portrayal["Shape"] = "circle"
         portrayal["Color"] = "black"
+        portrayal["r"] = 0.8
         portrayal["Layer"] = 0
-    else:
-        portrayal["Color"] = "green"
+
+    elif type(agent) is model.Stone:
+        portrayal["Shape"] = "circle"
+        portrayal["Color"] = "#848884"
+        portrayal["r"] = 0.5
         portrayal["Layer"] = 1
-        portrayal["r"] = 0.3
+
+    elif type(agent) is model.Leaf:
+        portrayal["Shape"] = "arrowHead"
+        portrayal["Color"] = "#0BDA51"
+        portrayal["scale"] = 0.6
+        portrayal["heading_x"] = 1
+        portrayal["heading_y"] = 0
+        portrayal["Layer"] = 2
+
+    elif type(agent) is model.Stick:
+        portrayal["Shape"] = "rect"
+        portrayal["Color"] = "#C19A6B"
+        portrayal["w"] = 0.9
+        portrayal["h"] = 0.2
+        portrayal["Layer"] = 3
+
+    else:
+        portrayal["Shape"] = "circle"
+        portrayal["Color"] = "red"
+        portrayal["r"] = 0.9
+        portrayal["Layer"] = 1
 
     return portrayal
 
@@ -30,8 +53,8 @@ arguments = {
     "width":50,
     "height":50,
     "density": UserSettableParameter("slider", "Particle Density", 0.1, 0.01, 1.0, 0.01),
-    "s": UserSettableParameter("slider", "Step Size", 1, 1, 5),
-    "j": UserSettableParameter("slider", "Jump Size", 3, 2, 10),
+    "stepsize": UserSettableParameter("slider", "Step Size", 1, 1, 5),
+    "jumpsize": UserSettableParameter("slider", "Jump Size", 3, 2, 10),
     "random_creation": UserSettableParameter("checkbox", "Random Creation", True)
 }
 
