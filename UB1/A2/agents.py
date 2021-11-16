@@ -35,7 +35,6 @@ class Ant(Agent):
     def drop(self):
         p_drop = self.particle.p_drop()
         if self.random.random() < p_drop:
-            #if self.model.grid.is_cell_free(self.pos)      # ClusterGrid function
             if not self.model.grid.is_cell_empty(self.pos):
                 self.find_empty(radius=1)
             self.particle.free = True

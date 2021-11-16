@@ -19,15 +19,15 @@ def clustercount(grid):
             sum_grid[i,j] = sum * grid[i, j]
 
     cluster_grid = sum_grid
-    res_grid = None
+    prev_grid = None
 
-    while not np.array_equal(cluster_grid, res_grid):
-        res_grid = cluster_grid
+    while not np.array_equal(cluster_grid, prev_grid):
+        prev_grid = cluster_grid
         for i in range(maxi):
             for j in range(maxj):
-                if res_grid[i, j] < 2: continue
-                arr = res_grid[max(0, i-1): min(i+2,maxj), max(0, j-1): min(j+2, maxj)]
-                if np.max(arr) > res_grid[i, j]:
+                if prev_grid[i, j] < 2: continue
+                arr = prev_grid[max(0, i-1): min(i+2,maxj), max(0, j-1): min(j+2, maxj)]
+                if np.max(arr) > prev_grid[i, j]:
                     cluster_grid[i, j] = np.max(arr)
 
     return cluster_grid
@@ -43,7 +43,6 @@ def compute_singles(model, thresh=7):
     count_arr = np.bincount(res)
     return np.sum(count_arr[1, thresh])
 '''
-
 
 class ClusteringModel(Model):
     def __init__(self, N, density=0.1, stepsize=1,
@@ -93,9 +92,6 @@ class ClusteringModel(Model):
                 P = Stick
             elif r == 2:
                 P = Leaf
-            else:
-                print(r, "ERROR")
-                P = Particle
 
             p = P(i + self.num_ants, self)
             pos = (particle_coords[i, 0], particle_coords[i, 1])
@@ -111,13 +107,10 @@ class ClusteringModel(Model):
     def initial_step(self):
         for key, agent in self.schedule._agents.items():
             agent.initial_step()
-        print('{"type":"initial_step"}')        # just for fun
 
     def step(self):
-        # singles = compute_singles(self)
-        # print(singles)
-        #if self.schedule.steps == 0:
-            #self.initial_step()
+        #singles = compute_singles(self)
+        #print(singles)
         self.schedule.step()
 
 
@@ -125,7 +118,6 @@ class ClusterGrid(MultiGrid):
     def __init__(self, width, height, torus=False):
         super().__init__(width, height, torus)
 
-    # hilfsfunktion wegen index error
     def get_particles_in_neighborhood(self, pos, moore, include_center, radius=1):
         nbh = self.get_neighborhood(pos=pos, moore=moore,
                                     include_center=include_center,
@@ -135,5 +127,4 @@ class ClusterGrid(MultiGrid):
             contents = self.grid[x][y]
             if len(contents) > 0:
                 particles.extend([c for c in contents if type(c) in [Stone, Leaf, Stick]])
-
         return particles, len(nbh)
