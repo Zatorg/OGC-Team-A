@@ -1,0 +1,37 @@
+Welches Verhalten zeigen die Graphen und weshalb?
+
+Das Verhältnis von Entropie- und Emergenz Graphen ist trivial:
+Steigt die Entropie so fällt die Emergenz und umgekehrt.
+
+Zu den einzelnen Attributen:
+Positionen der Ameisen
+    Schwankt in einem kleinen Bereich: zwischen 4.7 und 4.75
+    Die Position der Ameisen ist also relativ gleichverteilt.
+    Es lässt sich kein Verhältnis zwischen der Entropie von X- und Y- Position feststellen.
+
+Positionen der Partikel
+    Wenn die Entropie von X- oder Y-Position sinkt, deutet das darauf hin, dass sich ein oder mehrere Cluster entweder auf einer senkrechten Linie (-> viele Cluster auf ähnlicher X-Koordinaten) oder waagerechten Linie (-> viele Cluster mit ähnlichen Y-Koordinaten) befinden.
+    Manchmal hängt die Entropie der X-Position mit der der Y-Position zusammen, 
+    zu vermuten ist, dass die Entropie von X- und Y-Position gleichermaßen verändert wenn sich ein oder mehrere Cluster auf oder in der Nähe der Diagonalen befinden.
+    
+"Beladung" der Ameisen
+    Der Algorithmus des vollständigen clustering lässt in einem Zeitschritt einen Agenten (im Falle des Absetzen eines Objekts) so lange versuchen ein neues Objekt aufzuheben, bis dies gelingt.
+    Infolge dessen ist zu jedem Zeitschritt jede Ameise mit einem Partikel beladen und keine ist unbeladen -> die Entropie ist immer 0.
+
+Anzahl der Nachbarn gleicher Art (NgA) eines Partikels
+    Am Anfang steigt die Entropie. 
+    Dies lässt sich dadurch erklären, dass anfangs fast jedes Partikel keine oder nur sehr wenige NgA hat (-> Niedrige Entropie). Mit sich bildenden Clustern haben immer mehr Partikel auch mehr NgA, die Häufigkeiten *der Anzahl der NgA verteilen sich, also steigt die Entropie.
+
+    Im Graph erkennt man nun, dass die Entropie leicht sinkt und dann wieder ansteigt, sie beginnt (periodisch) zu schwanken.
+    Es ist zu vermuten, dass immer mehr Partikel viele NgA haben, und wenige Partikel keine oder wenige NgA haben. Also sinkt die Entropie.
+    Sobald die Ameisen die Cluster wieder "aufdröseln" und es infolgedessen wieder mehr Partikel mit wenigen Nachbarn gleicher Art gibt, verteilen sich die Häufigkeiten wieder und die Entropie steigt.
+    Schlussfolgernd wäre ein solches lokales minimum, ein Optimum der Cluster.
+
+    Eine andere Vermutung ist, dass das sinken der Entropie auf wieder "lockerere" Cluster schließen lässt, dh es gibt wieder mehr einzelne Partikel und weniger mit höheren NgA Anzahlen. Sobald der Algorithmus aber  wieder dichtere Cluster formt steigt die Entropie wieder.
+    Diese Vermutung bedeutet, dass der Punkt ab dem die Entropie Sinken sollte, weil fast alle Partikel viele NgA haben, durch den Algorithmus garnicht erreicht wird.
+
+    Durch den Entropie-Chart der X- und Y-Position der Partikel erkennt man bei einigen Läufen, dass diese in Verbindung mit der Entropie der #NgA zu stehen scheint: Steigt die Entropie der #NgA so sinkt die der Parktikel-Positionen und umgekehrt. Dies ist allerdings nicht bei jedem Lauf zu erkennen und könnte auch an Zufall liegen, dennoch ist wohl die zweite Vermutung die plausiblere.
+
+Der Lauf dessen letzter Chart in der Abgabe dabei ist wurde mit folgenden Parametern durchgeführt:
+N=45, density=0.15, step_size=3, perception_radius=2, alpha=0.7, k_plus=0.1, k_minus=0.3, random_creation=True
+
