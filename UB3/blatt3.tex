@@ -1,0 +1,274 @@
+\documentclass[paper=a4, % Seitenformat
+         fontsize=10,  % Schriftgröße
+         oneside,        % einseitig
+         headsepline,    % Trennlinie für die Kopfzeile
+         notitlepage    % keine extra Titelseite
+]{scrartcl}              % KOMA-Script Article
+%------------------------------------------------------------------------
+
+\usepackage[automark]{scrlayer-scrpage}  % Seiten-Stil für scrartcl
+\usepackage[top=25mm]{geometry}          % Oberer Rand 25mm Einrückung
+\usepackage[utf8]{inputenc}              % Eingabekodierung
+\usepackage[T1]{fontenc}                 % Zeichenkodierung
+\usepackage{libertinus}
+\usepackage[english,ngerman]{babel}      % Mehrsprachenumgebung, Hauptsprache Deutsch
+\usepackage{setspace}                    % Zeilenabstand
+\usepackage{latexsym}                    % Latex-Symbole
+\usepackage{amsfonts,amssymb,amstext}    % Mathematische Formeln
+\usepackage{bbm}                         % bbm Schriftart
+\usepackage{graphicx}                    % Abbildungen einbinden
+\usepackage{tikz}                        % Abbildungen zeichnen
+
+\pagestyle{scrheadings}                  % Kopfzeilen nach scr-Standard
+
+\usetikzlibrary{automata}                % Tikz-Library zum Zeichnen von Automaten
+\usetikzlibrary{arrows}                  % Tikz-Library für mehr Pfeile
+
+%\usepackage[left=20mm, right=20mm]{geometry}
+
+%-----------------------------------------------------------------------------------
+%%% DOKUMENT-KOPF %%%
+%-----------------------------------------------------------------------------------
+
+% Definition von Variablen für Name, Titel und Übungsgruppe
+\makeatletter
+\gdef\autor#1{\gdef\@autor{#1}}
+\def\@autor{Kein Autor}
+\gdef\titel#1{\gdef\@titel{#1}}
+\def\@titel{Kein Titel}
+\gdef\gruppe#1{\gdef\@gruppe{#1}}
+\def\@titel{Keine Gruppe}
+
+% Header i=links, o=rechts
+%ihead{}
+%\ohead{}
+
+
+\parindent0em
+% Horizontale Linie mit Abstand zu den Seitenrändern
+\newcommand{\ownline}{\vspace{.7em}\hrule\vspace{.7em}} 
+
+% Aufgabenkopf
+\newcommand{\aufgabe}[1]{\vspace*{0.5cm}\large{\textbf{\textsf{Aufgabe #1}}}\normalsize\vspace*{0.5cm}}
+
+% Befehl zum Erzeugen des Kopfes
+\newcommand{\kopf}{
+\begin{center}
+\textit{Wintersemester 2021/2022} \\  
+\mbox{} \\
+{\Large Grundlagen des Organic Computing} \\
+\mbox{} \\
+\mbox{} \\
+{\Large \textsf{\textbf{\@titel}}} \\
+\mbox{} \\
+{
+\textsc{Team \@gruppe}} \\
+{\@autor} \\
+\end{center}
+}
+\makeatother
+
+%-----------------------------------------------------------------------------------
+
+
+% Hier eingetragene Daten erscheinen im Dokumentkopf
+\autor{Maximilian Krischan, Rares Tincu, Lea Tuncer Mata}
+\titel{Aufgabenblatt 3 Abgabe}
+\gruppe{A}
+
+\begin{document}
+
+\kopf
+
+\aufgabe{1}
+\begin{itemize}
+	\item System A
+        \begin{itemize}
+        \item 5 Elemente
+        \item 2 Kontrollelemente
+        \end{itemize}
+        Das System ist selbstselbstorganisiert und der Grad der Selbstorganisation ist 2:5
+	\item System B	
+        \begin{itemize}
+        \item 3 Elemente
+        \item 1 Kontrollelemente
+        \end{itemize}
+        Das System ist wenig-selbstorganisiert, der Grad der Selbstorganisation ist 1:3
+    \item System C
+        \begin{itemize}
+        \item 5 Elemente
+        \item 5 Kontrollelemente
+        \end{itemize}
+        Das System ist stark-selbstorganisiert, der Grad der Selbstorganisation ist 5:5
+\end{itemize}
+
+\aufgabe{2}
+
+\begin{enumerate}
+
+\item
+$j(X^0, X^1) = 1 - d(X^0, X^1) = 1 - \frac{4}{4} = 0$ \\
+
+$j(X^1, X^2) = 1 - d(X^1, X^2) = 1 - \frac{2}{4} = \frac{1}{2}$ \\
+
+$j(X^2, X^3) = 1 - d(X^3, X^3) = 1 - \frac{2}{4} = \frac{1}{2}$ \\
+
+$J = \frac{1}{3} (0 + \frac{1}{2} + \frac{1}{2}) = \frac{1}{3}$ \\
+
+\item 
+Eine Möglichkeit, das Ausmaß des Unterschiedes mit einzubeziehen, ist die Differenz der Werte zu verschiedenen Zeitschritten in der Metrik zu benutzen.
+%
+%Die verschiedenen Zustände haben z.T. sehr unterschiedliche Wertebereiche. 
+%Um die Veränderung eines Zustands gegenüber der in anderen Zuständen richtig zu werten, teilen wir die Differenz der Zeitschritte durch das Maximum der beiden Werte. Dadurch erhält man ihren relativen Unterschied.\\
+%Wir definieren also folgende Metrik:
+
+Die verschiedenen Zustände haben z.T. sehr unterschiedliche Wertebereiche. Also ist es wichtig die Veränderung eines Zustands gegenüber den anderen richtig zu werten. 
+Teilen wir die Differenz zweier Werte durch das Maximum der beiden, erhalten wir ihren relativen Unterschied.\\
+Wir definieren also folgende Metrik:
+    \[ d(X, X') := \frac{1}{|X|} \sum_{i = 0}^{|X|} \frac{|x_i - x_i'|}{max\{x_i, x_i'\}} \]
+
+Diese Metrik ist nur anwendbar weil die Zustände von $S$ ausschließlich numerische Werte enthalten.
+
+\item 
+Die Werte des Distanzmaßes müssen im Intervall $[0, 1]$ liegen, sodass auch ihre Durschnitte und dadurch $J$ in diesem Intervall liegen. Sonst wäre die dritte Bedingung für eine Homeostase Funktion verletzt.
+Diese Vorraussetztung wird von unserem Distanzmaß erfüllt.
+
+\end{enumerate} 
+
+
+\aufgabe{3.1}
+
+\begin{enumerate}
+
+\item \leavevmode\vadjust{\vspace{-\baselineskip}} \\
+\\
+\begin{tikzpicture}[ >=stealth', very thick, scale=0.7,
+  gap/.style={draw,circle,minimum width=0.75cm,inner sep=0,dashed,fill=white,align=center}]
+
+  \draw[->] (0, 0) -- (0, 10);
+  \node [gap] at (-1, 9.5) {\textcolor{blue}{$z_1$}};
+  \draw[->] (0, 0) -- (10, 0);
+  \node [gap] at (9.5, -1) {\textcolor{blue}{$z_2$}};
+
+
+  \node [gap] at (5, 10) {\textcolor{blue}{D}};
+  \draw (3, 1) rectangle (9, 8) node [gap] {\textcolor{blue}{S}};
+  \draw (4, 5) rectangle (7, 7) node [gap] {\textcolor{blue}{A}};
+  \draw (5.2, 5.2) rectangle (6.3, 6.3);
+  \node [gap] at (5.2, 6.3) {T};
+\end{tikzpicture}
+
+\item
+Das Ziel ist \textit{möglichst schnell ankommen}. Wir interpretieren dies als eine Ankunft in einem Zeitraum von 2 Stunden ab dem Treffzeitpunkt. \\
+Außerdem nehmen wir an, dass der Kommilitone mit einer Verspätung von einer halben Stunde losgefahren ist und ein mehrtägiger Besuch geplant ist.\\
+Wir definieren die Schwellwertfunktion als:
+\[
+    \theta := 
+    \left\{
+    \begin{array}{ll}
+        1 & \text{falls: Ankunft am selben Tag, fahrtüchtiges Fahrzeug}\\
+        0 & \text{sonst}\\
+    \end{array}
+    \right.
+\]
+
+\textbf{Situation 1}: ein Zustand im Target Space \\
+Der Kommilitone fährt schnell und wird vorraussichtlich nur bis zu 2 Stunden zu spät ankommen.
+
+\textbf{Situation 2}: eine Transition vom Target Space in den Survival Space\\
+Ein Reifen ist geplatzt ist und ohne Reifen hat man kein fahrtüchtiges Fahrzeug, der Schaden lässt sich aber beheben.
+
+\textbf{Situation 3}: eine Transition vom Survival Space in den Acceptance Space\\
+Der Schaden wird repariert und das Fahrzeug ist dann wieder fahrtüchtig.
+
+\textbf{Situation 4}: ein Zustand im Acceptance Space\\
+Der Kommilitone wird mit der geringeren Geschwindigkeit wahrscheinlich mit mehr als 2 Stunden Verspätung ankommen, allerdings noch am selbigen Tag, also ist der Zustand \textit{akzeptabel}.
+
+\textbf{Situation 5}: eine Transition vom Acceptance Space in den Target Space\\
+Der Reifen wird gewechselt und er kann so nun wieder schnell fahren.
+
+\textbf{Situation 6}: ein Zustand im Target Space\\
+Optimistisch gedacht, hat der erste Reifenwechsel und das Aufsuchen der Werkstatt nicht viel länger als eine Stunde gebraucht.
+Zusammen mit dem verspätetem Aufbruch kommt er also nicht mehr als 2 Stunden zu spät. Dies ist noch im Zeitraum des Target Space.
+
+\newpage 
+
+\item \leavevmode\vadjust{\vspace{-\baselineskip}} \\
+
+\begin{tikzpicture}[ >=stealth',  thick, scale=0.7,
+  gap/.style={draw,circle,minimum width=0.75cm,inner sep=0,dashed,fill=white,align=center}]
+
+  \draw[->] (0, 0) -- (0, 10);
+  \node [gap] at (-1, 9.5) {$z_1$};
+  \draw[->] (0, 0) -- (10, 0);
+  \node [gap] at (9.5, -1) {$z_2$};
+
+  \draw[->, red] (0, 0) to (5.3, 5.7) node at(2.0, 2.6) {$s_1$};
+  \draw[->, dashed] (5.3, 5.7) to [bend right=30] (6.0, 2.0) node at(5.2, 2.6) {$s_2$};
+  \draw[->, dashed, red] (0, 0) to (6.0, 2.0);
+
+  \draw[->, red] (0, 0) to (6.6, 5.1) node at(3.5, 2.2) {$s_4$};
+  \draw[->, dashed] (6.0, 2.0) to [bend right=30] node [right] {$s_3$} (6.6, 5.1);
+  \draw[->, dashed] (6.6, 5.1) to [bend right=20] (5.3, 5.7) node at (6.3, 5.7){$s_5$} ;
+
+  \node [gap] at (5, 10) {D};
+  \draw (3, 1) rectangle (9, 8) node [gap] {S};
+  \draw (4, 4.5) rectangle (7, 7) node [gap] {A};
+  \draw (4.7, 5.2) rectangle (5.8, 6.3);
+  \node [gap] at (4.7, 6.3) {T};
+\end{tikzpicture} \\ 
+\small{\textit{(damit die Transitionen besser eingezeichnet werden können wurden Acceptance- und Target Space verändert)}} \\
+
+$s_i$ steht für die $i$-te Situation, wobei die roten durchgehenden Pfeile Zuständen entsprechen und die schwarzen gestrichelten Pfeile entsprechen Transitionen.  \\
+
+\end{enumerate}
+
+\aufgabe{3.2}
+
+\begin{itemize}
+\item Das System ist adaptiv. \\
+Das System beinhaltet einen Fahrer, also einen Menschen und das Menschliche Gehirn ermöglicht ein sehr adaptives Verhalten.
+
+\item Das System ist adaptierbar\\ 
+Nach einer Beeiträchtigung wie in Situation 2 aus Aufgabe 3.1: Der Kommilitone hat einen Ersatzreifen angebracht, das System wurde also angepasst. Ebenso bei Situation 5: Er ist in eine Werkstatt gefahren um einen neuen Reifen anbringen zu lassen.
+
+\item Mit einer Geschwindigkeitsbegrenzung befände sich das System, nach obigen Akzeptanzkriterien (A 3.1), in einem Akzeptierbarem Zustand:
+Das Ziel wird möglicherweise nicht schnell genug (also mit 2 Studen Verspätung) erreicht, aber noch in einem akzeptablen Zeitraum (am selben Tag).
+
+\item 
+Allgemein ist das System nicht robust bezüglich Staus: Falls der Fahrer Studenlang steht kommt er möglichwerweise nicht mehr in einem akzeptablen Zeitraum an.
+Es könnte jedoch robust sein, falls der Fahrer Staus umfahren kann z.B. weil er durch ein Navi zeitig über Staus informiert und umgeleitet wird. 
+Allerding ist dies auch Situationsbedingt (bzw. Glück). Dies wäre Robusheit gegen Veränderungen in der Umgebung.\\
+Das System ist Robust bezüglich der Störung aus Aufabe 3.1. Dies ist Robustheit gegen Veränderungen im System, in diesem Fall ein kaputter Reifen.
+Allerdings ist das System nicht gegen jegliche Veränderungen robust sondern nur gegen Schäden am Fahrzeug. Bei Totalschaden ist z.B. ein Ersatzfahrzeug möglich. Falls jedoch der Fahrer (schwer) verletzt wird, kann er nicht weiterfahren und der Zustand ist im Dead Space.
+
+
+\item 
+    Ein Beispiel für Flexibilität wäre: \textit{Die Oma ruft an und verschiebt das Treffen auf nächste Woche.} \\
+    Das Ziel wird verlagert, kurzfristig ist es die Rückkehr nach Hause, langfristig wäre es die Ankunft bei der Oma in einer Woche zur ausgemachten Uhrzeit.
+
+\bigskip
+\begin{tikzpicture}[ >=stealth', very thick, scale=0.7,
+  gap/.style={draw,circle,minimum width=0.75cm,inner sep=0,dashed,fill=white,align=center}]
+
+  \draw[->] (0, 0) -- (0, 10);
+  \node [gap] at (-1, 9.5) {$z_1$};
+  \draw[->] (0, 0) -- (10, 0);
+  \node [gap] at (9.5, -1) {$z_2$};
+
+
+  \node [gap] at (5, 10) {D};
+  \draw (3, 1) rectangle (9, 8) node [gap] {S};
+  \draw (4, 5) rectangle (7, 7) node [gap] {A};
+  \draw (5.2, 5.2) rectangle (6.3, 6.3);
+  \node [gap] at (5.2, 6.3) {T};
+
+  \draw [blue] (5, 2) rectangle (8, 4) node [gap] {A$'$};
+  \draw [blue] (6.2, 2.2) rectangle (7.3, 3.3);
+  \node [blue] [gap] at (6.2, 3.3) {T$'$};
+
+\end{tikzpicture}
+
+\end{itemize}
+
+\end{document}

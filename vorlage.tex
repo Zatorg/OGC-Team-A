@@ -1,0 +1,86 @@
+\documentclass[paper=a4, % Seitenformat
+         fontsize=10,  % Schriftgröße
+         oneside,        % einseitig
+         headsepline,    % Trennlinie für die Kopfzeile
+         notitlepage    % keine extra Titelseite
+]{scrartcl}              % KOMA-Script Article
+%------------------------------------------------------------------------
+
+\usepackage[automark]{scrlayer-scrpage}  % Seiten-Stil für scrartcl
+\usepackage[top=25mm]{geometry}          % Oberer Rand 25mm Einrückung
+\usepackage[utf8]{inputenc}              % Eingabekodierung
+\usepackage[T1]{fontenc}                 % Zeichenkodierung
+\usepackage{libertinus}
+\usepackage[english,ngerman]{babel}      % Mehrsprachenumgebung, Hauptsprache Deutsch
+\usepackage{setspace}                    % Zeilenabstand
+\usepackage{latexsym}                    % Latex-Symbole
+\usepackage{amsfonts,amssymb,amstext}    % Mathematische Formeln
+\usepackage{bbm}                         % bbm Schriftart
+\usepackage{graphicx}                    % Abbildungen einbinden
+\usepackage{tikz}                        % Abbildungen zeichnen
+
+\pagestyle{scrheadings}                  % Kopfzeilen nach scr-Standard
+
+\usetikzlibrary{automata}                % Tikz-Library zum Zeichnen von Automaten
+\usetikzlibrary{arrows}                  % Tikz-Library für mehr Pfeile
+
+%\usepackage[left=20mm, right=20mm]{geometry}
+
+%-----------------------------------------------------------------------------------
+%%% DOKUMENT-KOPF %%%
+%-----------------------------------------------------------------------------------
+
+% Definition von Variablen für Name, Titel und Übungsgruppe
+\makeatletter
+\gdef\autor#1{\gdef\@autor{#1}}
+\def\@autor{Kein Autor}
+\gdef\titel#1{\gdef\@titel{#1}}
+\def\@titel{Kein Titel}
+\gdef\gruppe#1{\gdef\@gruppe{#1}}
+\def\@titel{Keine Gruppe}
+
+% Header i=links, o=rechts
+%ihead{}
+%\ohead{}
+
+
+\parindent0em
+% Horizontale Linie mit Abstand zu den Seitenrändern
+\newcommand{\ownline}{\vspace{.7em}\hrule\vspace{.7em}} 
+
+% Aufgabenkopf
+\newcommand{\aufgabe}[1]{\vspace*{0.5cm}\large{\textbf{\textsf{Aufgabe #1}}}\normalsize\vspace*{0.5cm}}
+
+% Befehl zum Erzeugen des Kopfes
+\newcommand{\kopf}{
+\begin{center}
+\textit{Wintersemester 2021/2022} \\  
+\mbox{} \\
+{\Large Grundlagen des Organic Computing} \\
+\mbox{} \\
+\mbox{} \\
+{\Large \textsf{\textbf{\@titel}}} \\
+\mbox{} \\
+{
+\textsc{Team \@gruppe}} \\
+{\@autor} \\
+\end{center}
+}
+\makeatother
+
+%-----------------------------------------------------------------------------------
+
+
+% Hier eingetragene Daten erscheinen im Dokumentkopf
+\autor{Maximilian Krischan, Rares Tincu, Lea Tuncer Mata}
+\titel{Aufgabenblatt 3 Abgabe}
+\gruppe{A}
+
+\begin{document}
+
+\kopf
+
+\aufgabe{1}
+
+
+\end{document}
