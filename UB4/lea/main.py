@@ -35,9 +35,9 @@ def plot_results(results):
     ax.set_xlabel("Game")
 
     for i, r in enumerate(results):
-        ax.plot(list(range(len(r))), r, label=str(i+2))
+        ax.plot(list(range(len(r))), r, label=f"{i+2}x{i+2)")
 
-    plt.legend(title="game size", loc="upper right")
+    plt.legend()
     plt.show()
 
 
