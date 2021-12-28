@@ -138,6 +138,3 @@ class GameGrid(Frame):
         if game_state == 'win' or game_state == 'lose':
             over = True
         return self.matrix, np.amax(self.matrix), over
-
-
-# game_grid = GameGrid()
