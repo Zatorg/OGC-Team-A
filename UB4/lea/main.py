@@ -1,6 +1,5 @@
 import time
 import argparse
-import sys
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
@@ -30,7 +29,7 @@ def plot_results(results):
     _, ax = plt.subplots()
 
     plt.yscale('log', base=2)
-    ax.yaxis.set_major_formatter(ScalarFormatter())  # 4 statt 2²
+    ax.yaxis.set_major_formatter(ScalarFormatter())  # 4 instead of 2²
     ax.set_ylabel("Score")
     ax.set_xlabel("Game")
 
@@ -51,8 +50,8 @@ def train(epochs, game_size):
         #game.update()
         m = player.move()
         game.move(m)
+        _, score, over = game.state()
 
-        _, score, over = game.state
         if over:
             scores.append(score)
             game.reset()
@@ -65,8 +64,8 @@ def train(epochs, game_size):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--human', dest='machine', action='store_false', default=True)
-    parser.add_argument('--epochs', type=int, default=100)
-    parser.add_argument('--size', type=int, default=4)
+    parser.add_argument('-epochs', type=int, default=100)
+    parser.add_argument('-size', type=int, default=4)
 
     args = vars(parser.parse_args())
     main(args)

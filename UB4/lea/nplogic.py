@@ -1,106 +1,88 @@
-import random
+import numpy as np
 
 
 def new_game(n):
-    matrix = [[0] * n for _ in range(n)]
-    matrix = add_two(matrix)
-    matrix = add_two(matrix)
+    matrix = np.zeros(shape=(n,n))
+    matrix = add_two(matrix, 2)
     return matrix
 
 
 def add_two(mat, n=1):
-    a = random.randint(0, len(mat) - 1)
-    b = random.randint(0, len(mat) - 1)
-    while mat[a][b] != 0:
-        a = random.randint(0, len(mat) - 1)
-        b = random.randint(0, len(mat) - 1)
-    mat[a][b] = 2
+    flat = mat.flatten()
+    zeros = np.argwhere(flat == 0).squeeze()
+    if zeros.shape == ():
+        zeros = [zeros]
+    zeros = np.random.choice(zeros, min(len(zeros), n))
+    flat[zeros] = 2
+    mat = flat.reshape(mat.shape)
     return mat
 
 
 # OBSERVE
-def game_state(mat):
-    flat = []
-    for row in mat:
-        flat.extend(row)
+def score(mat):
+    return np.max(mat)
 
-    game_over = True
+
+def game_state(mat):
+    flat = mat.flatten()
 
     if 0 in flat:
-        game_over = False
+        return False
 
     for i in range(len(flat)):
         if i % len(mat) != len(mat) - 1 and flat[i] == flat[i + 1]:
-            game_over = False
+            return False
         if i < len(flat) - len(mat) and flat[i] == flat[i + len(mat)]:
-            game_over = False
+            return False
 
-    return game_over
-
-
-def score(mat):
-    flat = []
-    for row in mat:
-        flat.extend(row)
-    return max(flat)
-
+    return True
 
 
 def reverse(mat):
-    new = []
-    for row in mat:
-        new.append(row[::-1])
-    return new
+    return np.flip(mat, axis=-1)
 
 
 def transpose(mat):
-    new = []
-    for i in range(len(mat)):
-        new.append([mat[j][i] for j in range(len(mat))])
-    return new
+    return np.transpose(mat)
 
 
 def shift(mat):
-    new = [[0] * len(mat) for _ in range(len(mat))]
-    for i in range(len(mat)):
+    new = np.zeros_like(mat)
+    for i in range(mat.shape[0]):
         anchor = 0
-        for j in range(len(mat)):
+        for j in range(mat.shape[1]):
             if mat[i][j] != 0:
                 new[i][anchor] = mat[i][j]
                 anchor += 1
 
-    done = mat != new
+    done = not np.array_equal(mat, new)
     return new, done
 
 
 def merge(mat, done):
-    for i in range(len(mat)):
-        for j in range(len(mat) - 1):
-            if mat[i][j] == mat[i][j + 1] and mat[i][j] != 0:
+    for i in range(mat.shape[0]):
+        for j in range(mat.shape[1]-1):
+            if mat[i][j] == mat[i][j+1] and mat[i][j] != 0:
                 mat[i][j] *= 2
-                mat[i][j + 1] = 0
+                mat[i][j+1] = 0
                 done = True
     return mat, done
 
 
 def up(mat):
     mat = transpose(mat)
-
     mat, done = shift(mat)
     mat, done = merge(mat, done)
     mat = shift(mat)[0]
-
     mat = transpose(mat)
     return mat, done
 
 
 def down(mat):
     mat = reverse(transpose(mat))
-
     mat, done = shift(mat)
     mat, done = merge(mat, done)
     mat = shift(mat)[0]
-
     mat = transpose(reverse(mat))
     return mat, done
 
@@ -109,17 +91,13 @@ def left(mat):
     mat, done = shift(mat)
     mat, done = merge(mat, done)
     mat = shift(mat)[0]
-
     return mat, done
 
 
 def right(mat):
     mat = reverse(mat)
-
     mat, done = shift(mat)
     mat, done = merge(mat, done)
     mat = shift(mat)[0]
-
     mat = reverse(mat)
     return mat, done
-

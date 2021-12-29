@@ -1,6 +1,6 @@
 from tkinter import Frame, Label, CENTER
 import constants as c
-import logic
+import logic as logic
 
 
 class GameGrid(Frame):
@@ -9,20 +9,20 @@ class GameGrid(Frame):
 
         self.grid_size = grid_size
         self.matrix = logic.new_game(grid_size)
-        # OBSERVER
-        self.state = logic.state(self.matrix)
 
         self.master.title('2048')
         self.master.bind("<Key>", self.key_down)
-        self.commands = {
+        self.direction_commands = {
             c.UP: logic.up,
             c.DOWN: logic.down,
             c.LEFT: logic.left,
             c.RIGHT: logic.right
         }
+        self.control_commands = {c.RESET: self.reset, c.QUIT: self.quit}
 
         self.grid()
         self.grid_cells = []
+
         self.init_grid()
         self.update_grid_cells()
 
@@ -55,38 +55,40 @@ class GameGrid(Frame):
                 )
         self.update_idletasks()
 
+    # CONTROL
     def reset(self):
         self.matrix = logic.new_game(self.grid_size)
         self.update_grid_cells()
 
     def quit(self):
-        self.destroy()
+        self.master.destroy()
 
     # CONTROL
     def move(self, direction):
-        self.matrix, was_changed = self.commands[direction](self.matrix)
+        self.matrix, was_changed = self.direction_commands[direction](self.matrix)
         if was_changed:
-            self.matrix = logic.add_two(self.matrix)
+            self.matrix = logic.add_two(self.matrix, 1)
             self.update_grid_cells()
 
-        # OBSERVER
-        self.state = logic.state(self.matrix)
+    # OBSERVE
+    def state(self):
+        game_state = logic.game_state(self.matrix)
+        score = logic.score(self.matrix)
+        return self.matrix, score, game_state
 
     def key_down(self, event):
-        direction = event.keysym
+        key = event.keysym
 
-        if direction == c.QUIT:
-            exit()
+        if key in self.control_commands:
+            self.control_commands[key]()
 
-        elif direction == c.RESET:
-            self.reset()
-
-        elif direction in self.commands:
-            self.move(direction)
+        elif key in self.direction_commands:
+            self.move(key)
 
             # is this necessary??
-            if self.state[2]:
-                if self.state[1] == 2048:
+            _, score, game_over = self.state()
+            if game_over:
+                if score == 2048:
                     self.grid_cells[0][0].configure(text="You", bg=c.BG_COLOR_CELL_EMPTY, fg="black")
                     self.grid_cells[0][1].configure(text="Win!", bg=c.BG_COLOR_CELL_EMPTY, fg="black")
                 else:
