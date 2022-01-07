@@ -10,6 +10,7 @@ from player import Player
 
 def main(args):
     if args["machine"]:
+        print("number of epochs:", args["epochs"])
         scores = []
         for i in [2, 3, 4]:
             start = time.time()
@@ -26,17 +27,20 @@ def main(args):
 
 
 def plot_results(results):
-    _, ax = plt.subplots()
+    fig, ax = plt.subplots()
 
     plt.yscale('log', base=2)
     ax.yaxis.set_major_formatter(ScalarFormatter())  # 4 instead of 2²
     ax.set_ylabel("Score")
     ax.set_xlabel("Game")
 
+    plots = []
+    labels = []
     for i, r in enumerate(results):
-        ax.plot(list(range(len(r))), r, label=f"{i+2}x{i+2}")
+        plots.append(ax.plot(list(range(len(r))), r))
+        labels.append(f"{i+2}x{i+2}")
 
-    plt.legend()
+    fig.legend(plots, labels=labels, loc="center right", borderaxespad=0.1)
     plt.show()
 
 

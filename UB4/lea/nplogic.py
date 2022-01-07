@@ -22,7 +22,7 @@ def add_two(mat, n=1):
 def score(mat):
     return np.max(mat)
 
-
+# OBSERVE
 def game_state(mat):
     flat = mat.flatten()
 

@@ -7,7 +7,7 @@ def new_game(n):
     matrix = add_two(matrix)
     return matrix
 
-
+# Parameter n ist für eine Numpy-logic-Version die nicht in der Abgabe enthalten ist.
 def add_two(mat, n=1):
     a = random.randint(0, len(mat) - 1)
     b = random.randint(0, len(mat) - 1)
@@ -38,12 +38,12 @@ def game_state(mat):
     return game_over
 
 
+# OBSERVE
 def score(mat):
     flat = []
     for row in mat:
         flat.extend(row)
     return max(flat)
-
 
 
 def reverse(mat):
@@ -122,4 +122,3 @@ def right(mat):
 
     mat = reverse(mat)
     return mat, done
-
