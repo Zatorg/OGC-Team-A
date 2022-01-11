@@ -40,6 +40,7 @@ class GameGrid(Frame):
         self.init_grid()
         self.matrix = logic.new_game(self.size)
         self.update_grid_cells()
+        self.points = 0
         if use_manual:
             self.mainloop()
         else:
@@ -100,8 +101,9 @@ class GameGrid(Frame):
         if key == c.KEY_QUIT:
             exit()
         elif key in self.commands:
-            self.matrix, done = self.commands[key](self.matrix)
+            self.matrix, done, points_gained = self.commands[key](self.matrix)
             if done:
+                self.points += points_gained
                 self.matrix = logic.add_two(self.matrix)
                 self.update_grid_cells()
                 if logic.game_state(self.matrix) == 'win':
@@ -121,8 +123,9 @@ class GameGrid(Frame):
     # Up: 0, Right: 1, Down: 2, Left: 3
     def move(self, direction):
         if direction in self.virtual_commands:
-            self.matrix, done = self.virtual_commands[direction](self.matrix)
+            self.matrix, done, points_gained = self.virtual_commands[direction](self.matrix)
             if done:
+                self.points += points_gained
                 self.matrix = logic.add_two(self.matrix)
                 self.update_grid_cells()
 
@@ -130,6 +133,7 @@ class GameGrid(Frame):
     def reset(self):
         self.matrix = logic.new_game(self.size)
         self.update_grid_cells()
+        self.points = 0
 
     # OBSERVE
     def state(self):
@@ -137,4 +141,4 @@ class GameGrid(Frame):
         game_state = logic.game_state(self.matrix)
         if game_state == 'win' or game_state == 'lose':
             over = True
-        return self.matrix, np.amax(self.matrix), over
+        return self.matrix, self.points, over

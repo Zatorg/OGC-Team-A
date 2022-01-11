@@ -56,49 +56,51 @@ def cover_up(mat):
 
 
 def merge(mat, done):
+    points = 0
     for i in range(mat.shape[0]):
         for j in range(mat.shape[1]-1):
             if mat[i, j] == mat[i, j+1] and mat[i, j] != 0:
                 mat[i, j] *= 2
+                points += mat[i, j]
                 mat[i, j+1] = 0
                 done = True
-    return mat, done
+    return mat, done, points
 
 
 def up(game):
     # return matrix after shifting up
     game = np.transpose(game)
     game, done = cover_up(game)
-    game, done = merge(game, done)
+    game, done, points = merge(game, done)
     game = cover_up(game)[0]
     game = np.transpose(game)
-    return game, done
+    return game, done, points
 
 
 def down(game):
     # return matrix after shifting down
     game = np.fliplr(np.transpose(game))
     game, done = cover_up(game)
-    game, done = merge(game, done)
+    game, done, points = merge(game, done)
     game = cover_up(game)[0]
     game = np.transpose(np.fliplr(game))
-    return game, done
+    return game, done, points
 
 
 def left(game):
     # return matrix after shifting left
     game, done = cover_up(game)
-    game, done = merge(game, done)
+    game, done, points = merge(game, done)
     game = cover_up(game)[0]
-    return game, done
+    return game, done, points
 
 
 def right(game):
     # return matrix after shifting right
     game = np.fliplr(game)
     game, done = cover_up(game)
-    game, done = merge(game, done)
+    game, done, points = merge(game, done)
     game = cover_up(game)[0]
     game = np.fliplr(game)
-    return game, done
+    return game, done, points
 
