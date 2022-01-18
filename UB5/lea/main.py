@@ -5,13 +5,6 @@ import sys
 import matplotlib.pyplot as plt
 
 
-def str_repr(state_matrix):
-    s = ""
-    for row in state_matrix:
-        s += ",".join(str(x) for x in row) + ";"
-    return s
-
-
 def mirror(mat, axis):
     if axis == 0:
         return [mat[-i] for i in range(1, len(mat) + 1)]
@@ -84,8 +77,8 @@ def get_action(state_hash):
     return action_idx, action_val
 
 
-epochs = 50000
-game_size = 3
+epochs = 10000
+game_size = 2
 
 e_init = 0.7
 e_end = 0.1
@@ -154,7 +147,7 @@ print(f"\nAverage score over game size {game_size}: {sum(scores) / len(scores) :
 
 x = list(range(len(mean_scores)))
 plt.plot(x, mean_scores)
-plt.title("3x3 Game Optimized Q-Learning")
+plt.title("Optimized Q-Learning")
 plt.show()
 
 print("Q-Table")
