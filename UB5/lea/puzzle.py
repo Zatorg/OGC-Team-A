@@ -4,11 +4,11 @@ import logic as logic
 
 
 class GameGrid(Frame):
-    def __init__(self, grid_size):
+    def __init__(self, size):
         Frame.__init__(self, bg=c.BG_COLOR_GAME, width=c.SIZE, height=c.SIZE)
 
-        self.grid_size = grid_size
-        self.matrix = logic.new_game(grid_size)
+        self.grid_size = size
+        self.matrix = logic.new_game(size)
 
         self.master.title('2048')
         self.master.bind("<Key>", self.key_down)
@@ -26,7 +26,8 @@ class GameGrid(Frame):
         self.init_grid()
         self.update_grid_cells()
 
-        #self.mainloop()
+        # neue Berechnung der Punktzahl..
+        self.points = 0
 
     def init_grid(self):
         for i in range(self.grid_size):
@@ -58,6 +59,7 @@ class GameGrid(Frame):
     # CONTROL
     def reset(self):
         self.matrix = logic.new_game(self.grid_size)
+        self.points = 0
         self.update_grid_cells()
 
     def quit(self):
@@ -65,16 +67,18 @@ class GameGrid(Frame):
 
     # CONTROL
     def move(self, direction):
-        self.matrix, was_changed = self.direction_commands[direction](self.matrix)
+        self.matrix, was_changed, points = self.direction_commands[direction](self.matrix)
         if was_changed:
+            self.points += points # Neue Berechnung der Punktzahl
             self.matrix = logic.add_two(self.matrix, 1)
             self.update_grid_cells()
 
     # OBSERVE
     def state(self):
-        game_state = logic.game_state(self.matrix)
-        score = logic.score(self.matrix)
-        return self.matrix, score, game_state
+        over = logic.game_state(self.matrix)
+        max_val = logic.max_val(self.matrix)
+
+        return self.matrix, max_val, over, self.points
 
     def key_down(self, event):
         key = event.keysym
@@ -86,9 +90,9 @@ class GameGrid(Frame):
             self.move(key)
 
             # is this necessary??
-            _, score, game_over = self.state()
+            _, max_val, game_over, score = self.state()
             if game_over:
-                if score == 2048:
+                if max_val == 2048:
                     self.grid_cells[0][0].configure(text="You", bg=c.BG_COLOR_CELL_EMPTY, fg="black")
                     self.grid_cells[0][1].configure(text="Win!", bg=c.BG_COLOR_CELL_EMPTY, fg="black")
                 else:
