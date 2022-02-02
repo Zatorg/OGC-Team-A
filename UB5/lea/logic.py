@@ -39,7 +39,7 @@ def game_state(mat):
 
 
 # OBSERVE
-def score(mat):
+def max_val(mat):
     flat = []
     for row in mat:
         flat.extend(row)
@@ -74,51 +74,53 @@ def shift(mat):
 
 
 def merge(mat, done):
+    points = 0
     for i in range(len(mat)):
         for j in range(len(mat) - 1):
             if mat[i][j] == mat[i][j + 1] and mat[i][j] != 0:
                 mat[i][j] *= 2
+                points += mat[i][j]
                 mat[i][j + 1] = 0
                 done = True
-    return mat, done
+    return mat, done, points
 
 
 def up(mat):
     mat = transpose(mat)
 
     mat, done = shift(mat)
-    mat, done = merge(mat, done)
+    mat, done, points = merge(mat, done)
     mat = shift(mat)[0]
 
     mat = transpose(mat)
-    return mat, done
+    return mat, done, points
 
 
 def down(mat):
     mat = reverse(transpose(mat))
 
     mat, done = shift(mat)
-    mat, done = merge(mat, done)
+    mat, done, points = merge(mat, done)
     mat = shift(mat)[0]
 
     mat = transpose(reverse(mat))
-    return mat, done
+    return mat, done, points
 
 
 def left(mat):
     mat, done = shift(mat)
-    mat, done = merge(mat, done)
+    mat, done, points = merge(mat, done)
     mat = shift(mat)[0]
 
-    return mat, done
+    return mat, done, points
 
 
 def right(mat):
     mat = reverse(mat)
 
     mat, done = shift(mat)
-    mat, done = merge(mat, done)
+    mat, done, points = merge(mat, done)
     mat = shift(mat)[0]
 
     mat = reverse(mat)
-    return mat, done
+    return mat, done, points
