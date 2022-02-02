@@ -30,9 +30,9 @@ class GameGrid(Frame):
 
         self.virtual_commands = {
             0: logic.up,
+            1: logic.right,
             2: logic.down,
-            3: logic.left,
-            1: logic.right
+            3: logic.left
         }
 
         self.size = size
